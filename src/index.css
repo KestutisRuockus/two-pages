@@ -61,3 +61,38 @@ nav .active-link {
   color: var(--text-primary);
   font-weight: bold;
 }
+
+.users-page {
+  width: 70%;
+  margin: auto;
+}
+
+table {
+  width: 100%;
+  margin: 60px auto;
+  border: 4px solid var(--border-color);
+}
+
+table,
+tr,
+th,
+td {
+  border: 4px solid var(--border-color);
+  border-collapse: collapse;
+  padding: 8px 0;
+  text-align: center;
+}
+
+button {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+button:hover {
+  background-color: var(--hover-bg);
+  color: var(--hover-text);
+}
