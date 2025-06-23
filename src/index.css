@@ -20,18 +20,44 @@
 }
 
 body {
+  width: 80%;
+  margin: auto;
   background-color: var(--bg-primary);
   color: var(--text-primary);
 }
 
-h1 {
-  font-size: 40px;
-  background-color: var(--bg-secondary);
-  color: var(--text-secondary);
-  padding: 20px;
+nav {
+  background-color: var(--bg-navbar);
+  padding: 12px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 60px;
 }
 
-h1:hover {
-  background-color: var(--hover-bg);
-  color: var(--hover-text);
+nav .logo {
+  width: 72px;
+}
+
+nav ul {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+  text-decoration: none;
+}
+
+nav ul li a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+nav ul li a:hover {
+  color: var(--text-primary);
+}
+
+nav .active-link {
+  color: var(--text-primary);
+  font-weight: bold;
 }
