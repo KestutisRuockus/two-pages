@@ -62,8 +62,7 @@ nav .active-link {
   font-weight: bold;
 }
 
-.users-page {
-  width: 70%;
+.page-container {
   margin: auto;
   position: relative;
 }
@@ -165,4 +164,91 @@ button:hover {
   display: flex;
   align-items: center;
   gap: 24px;
+}
+
+.joke-wrapper {
+  width: fit-content;
+  max-width: 50%;
+  margin: auto;
+  margin-top: 80px;
+  padding: 24px 24px 12px;
+  border: 8px solid var(--border-color);
+  border-radius: 14px;
+}
+
+.joke-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.joke-content span {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.joke-date {
+  margin-top: 20px;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.joke-date span {
+  font-weight: bold;
+}
+
+.spinner {
+  width: 100px;
+  height: 100px;
+  margin-top: 150px;
+  border: 12px solid rgba(0, 0, 0, 0.2);
+  border-top-color: var(--hover-bg);
+  border-radius: 50%;
+  animation: spin 1s ease-in-out infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .joke-content {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .joke-wrapper {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  body,
+  .page-container {
+    width: 100%;
+  }
+
+  .joke-wrapper {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .page-container {
+    width: 80%;
+  }
+}
+
+@media (max-width: 1280px) {
+  .joke-wrapper {
+    max-width: 80%;
+  }
 }

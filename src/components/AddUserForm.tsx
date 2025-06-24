@@ -88,7 +88,7 @@ const AddUserForm = ({
               Select Gender
             </option>
             <option value="male">Male</option>
-            <option value="female">Fele</option>
+            <option value="female">Female</option>
           </select>
         </div>
         <div>

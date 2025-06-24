@@ -105,7 +105,7 @@ const UsersPage = () => {
   }, [sortValue, users]);
 
   return (
-    <section className="users-page">
+    <section className="page-container">
       <select
         onChange={(e) => setSortValue(e.target.value)}
         value={sortValue}
