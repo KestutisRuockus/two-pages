@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 type FormData = {
   id: string;
@@ -6,6 +7,11 @@ type FormData = {
   role: string;
   gender: string;
   age: number | undefined;
+};
+
+type AddUserFormProps = {
+  closeModal: () => void;
+  addNewUser: (newUser: FormData) => void;
 };
 
 const initFormData = {
@@ -16,20 +22,29 @@ const initFormData = {
   age: undefined,
 };
 
-const AddUserForm = ({
-  closeModal,
-  addNewUser,
-}: {
-  closeModal: () => void;
-  addNewUser: (newUser: FormData) => void;
-}) => {
+const AddUserForm = ({ closeModal, addNewUser }: AddUserFormProps) => {
   const [formData, setFormData] = useState<FormData>(initFormData);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+
+    if (name === "age") {
+      if (value === "") {
+        setFormData((prev) => ({ ...prev, age: undefined }));
+        return;
+      }
+
+      const num = Number(value);
+
+      if (isNaN(num) || !Number.isInteger(num)) {
+        return;
+      }
+      setFormData((prev) => ({ ...prev, age: num }));
+    } else {
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -38,19 +53,29 @@ const AddUserForm = ({
     if (isFormValid()) {
       addNewUser(formData);
       closeModal();
-      alert("User Added Successfully!");
-    } else {
-      alert("Please fill in all fields!");
+      toast.success("User Added Successfully!");
     }
   };
 
   const isFormValid = () => {
-    return (
-      formData.name.trim() !== "" &&
-      formData.role.trim() !== "" &&
-      formData.gender.trim() !== "" &&
-      formData.age !== undefined
-    );
+    const symbolLimit = 30;
+    const errors: string[] = [];
+
+    if (formData.name === "") errors.push("Fill Name input field");
+    if (formData.name.length > symbolLimit)
+      errors.push(`Name must be shorter than ${symbolLimit} characters`);
+    if (formData.role === "") errors.push("Fill Role input field");
+    if (formData.role.length > symbolLimit)
+      errors.push(`Role must be shorter than ${symbolLimit} characters`);
+    if (formData.gender === "") errors.push("Select Gender");
+    if (formData.age === undefined) errors.push("Fill Age input field");
+
+    if (errors.length > 0) {
+      errors.forEach((err) => toast.warn(err));
+      return false;
+    }
+
+    return true;
   };
 
   const generateId = () => Date.now().toString();
@@ -97,6 +122,7 @@ const AddUserForm = ({
             type="number"
             name="age"
             min={1}
+            max={100}
             value={formData.age ?? ""}
             onChange={handleInputChange}
           />

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Modal from "../components/Modal";
 import AddUserForm from "../components/AddUserForm";
+import { ToastContainer } from "react-toastify";
+import UserRow from "../components/UserRow";
 
 const initUsersList = [
   {
@@ -44,25 +46,32 @@ export type User = {
   age: number | undefined;
 };
 
+const getSortedUsers = (users: User[], sortValue: string) => {
+  const sorted = [...users];
+  switch (sortValue) {
+    case "name-asc":
+      return sorted.sort((a, b) => a.name.localeCompare(b.name));
+    case "name-desc":
+      return sorted.sort((a, b) => b.name.localeCompare(a.name));
+    case "role-asc":
+      return sorted.sort((a, b) => a.role.localeCompare(b.role));
+    case "role-desc":
+      return sorted.sort((a, b) => b.role.localeCompare(a.role));
+    case "age-asc":
+      return sorted.sort((a, b) => a.age! - b.age!);
+    case "age-desc":
+      return sorted.sort((a, b) => b.age! - a.age!);
+    default:
+      return users;
+  }
+};
+
 const UsersPage = () => {
   const [users, setUsers] = useState<User[] | []>(initUsersList);
   const [isModalOpen, setModalOpen] = useState(false);
   const [sortValue, setSortValue] = useState<string>("");
   const [sortedList, setSortedList] = useState<User[] | []>([]);
 
-  const UserRow = ({ user }: { user: User }) => {
-    return (
-      <tr>
-        <td>{user.name}</td>
-        <td>{user.role}</td>
-        <td>{user.gender}</td>
-        <td>{user.age}</td>
-        <th>
-          <button onClick={() => removeUser(user.id)}>Remove</button>
-        </th>
-      </tr>
-    );
-  };
   const closeModal = () => setModalOpen(false);
 
   const removeUser = (id: string) => {
@@ -76,28 +85,7 @@ const UsersPage = () => {
 
   useEffect(() => {
     if (sortValue) {
-      const sorted = [...users];
-
-      const getSortedUsers = () => {
-        switch (sortValue) {
-          case "name-asc":
-            return sorted.sort((a, b) => a.name.localeCompare(b.name));
-          case "name-desc":
-            return sorted.sort((a, b) => b.name.localeCompare(a.name));
-          case "role-asc":
-            return sorted.sort((a, b) => a.role.localeCompare(b.role));
-          case "role-desc":
-            return sorted.sort((a, b) => b.role.localeCompare(a.role));
-          case "age-asc":
-            return sorted.sort((a, b) => a.age! - b.age!);
-          case "age-desc":
-            return sorted.sort((a, b) => b.age! - a.age!);
-          default:
-            return users;
-        }
-      };
-
-      const sortedResult = getSortedUsers();
+      const sortedResult = getSortedUsers(users, sortValue);
       setSortedList(sortedResult);
     } else {
       setSortedList(users);
@@ -129,11 +117,11 @@ const UsersPage = () => {
         <tbody>
           {users.length === 0 && (
             <tr>
-              <td>Users list is empty</td>
+              <td colSpan={4}>Users list is empty</td>
             </tr>
           )}
           {sortedList.map((user) => (
-            <UserRow key={user.id} user={user} />
+            <UserRow key={user.id} user={user} removeUser={removeUser} />
           ))}
         </tbody>
       </table>
@@ -143,6 +131,7 @@ const UsersPage = () => {
           <AddUserForm closeModal={closeModal} addNewUser={addNewUser} />
         </Modal>
       )}
+      <ToastContainer />
     </section>
   );
 };

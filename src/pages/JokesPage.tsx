@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Joke = {
   value: string;
@@ -8,7 +8,8 @@ type Joke = {
 
 const JokesPage = () => {
   const [joke, setJoke] = useState<Joke | undefined>(undefined);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const isFetchingRef = useRef<boolean>(false);
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -23,37 +24,41 @@ const JokesPage = () => {
     return fullDate;
   };
 
-  useEffect(() => {
-    const fetchJoke = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(
-          "https://api.chucknorris.io/jokes/random?category=dev"
-        );
-        if (!res.ok) {
-          throw new Error(`Response status: ${res.status}`);
-        }
-
-        const { value, icon_url } = await res.json();
-        if (value && icon_url) {
-          const fetchDate = getCurrentDate() + "";
-          setJoke({ value, icon_url, fetchDate });
-        }
-      } catch (error) {
-        console.log(`Error while fetching: ${error}`);
-      } finally {
-        setLoading(false);
+  const fetchJoke = useCallback(async () => {
+    if (isFetchingRef.current) {
+      return;
+    }
+    setLoading(true);
+    isFetchingRef.current = true;
+    try {
+      const res = await fetch(
+        "https://api.chucknorris.io/jokes/random?category=dev"
+      );
+      if (!res.ok) {
+        throw new Error(`Response status: ${res.status}`);
       }
-    };
 
+      const { value, icon_url } = await res.json();
+      if (value && icon_url) {
+        const fetchDate = getCurrentDate() + "";
+        setJoke({ value, icon_url, fetchDate });
+      }
+    } catch (error) {
+      console.log(`Error while fetching: ${error}`);
+    } finally {
+      isFetchingRef.current = false;
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
     fetchJoke();
-
     const interval = setInterval(() => {
       fetchJoke();
     }, 15000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchJoke]);
 
   return (
     <section className="page-container">
@@ -72,4 +77,5 @@ const JokesPage = () => {
     </section>
   );
 };
+
 export default JokesPage;
